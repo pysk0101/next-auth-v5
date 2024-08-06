@@ -19,7 +19,6 @@ import {
 import { CardWrapper } from "./card-wrapper";
 import { FormSuccess } from "../form-succes";
 import { login } from "@/actions/login";
-import { log } from "console";
 export default function LoginForm() {
 
 
@@ -42,9 +41,10 @@ export default function LoginForm() {
     setSuccess("")
 
     startTransition(() => {
-      login(values).then((res) => {
-          setError(res.error)
-          setSuccess(res.success)
+      login(values).then((res : any) => {
+          console.log("bu adamin burasi calisti.")
+          setError(res?.error)
+          setSuccess(res?.success)
         }
       )
     
