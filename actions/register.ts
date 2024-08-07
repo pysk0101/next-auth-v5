@@ -1,36 +1,33 @@
 "use server"
 
-import { db } from "@/lib/db";
 import * as z from "zod";
-import bcrypt from "bcryptjs"; 
 import { RegisterSchema } from "@/schemas";
-import { getUserByEmail } from "@/data/user";
-
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
     const validatedFields = RegisterSchema.parse(values);
 
-    console.log( "user values",validatedFields)
+    console.log("user values", validatedFields);
     if (!validatedFields) {
-        return { error: "Invalid fields" }
+        return { error: "Invalid fields" };
     }
-    const {email , password, name }= validatedFields
-    const hashedPassword = await bcrypt.hash(password, 10)
 
-    const existingUser = await getUserByEmail(email)
-    if (existingUser) {
-        return { error: "Email already in use"}
-    }   
+    const { email, password, name } = validatedFields;
 
-    await db.user.create({
-        data : {
-            email,
-            password: hashedPassword,
-            name
-        }
-    })
+    const result = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password, name })
+    });
 
-    //Todo : send email
+    if (!result.ok) {
+        return { error: "Error creating user" };
+    }
 
-    return { success: "User Created"}
+    console.log(result);
+
+    // Todo: send email
+
+    return { success: "User Created" };
 }

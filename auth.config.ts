@@ -1,3 +1,5 @@
+//Yapilandirmayi Tanimladigimiz Yer.
+
 import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials";
 import { LoginSchema } from "./schemas";
@@ -8,6 +10,7 @@ export default {
     providers: [
         Credentials({
             async authorize(credentials) {
+                console.log("authorize fonksiyonu calisti")
                 const validatedFields= LoginSchema.safeParse(credentials)
 
                 if(validatedFields.success){
@@ -20,7 +23,7 @@ export default {
                         password,
                         user.password
                     )
-
+                    console.log("authorize sana user gonderdi")
                     if (passwordMatch) return user
                 }
                 return null
